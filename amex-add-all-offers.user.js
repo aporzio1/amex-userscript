@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Amex Add All Offers
 // @namespace    http://tampermonkey.net/
-// @version      1.1.0
+// @version      1.1.1
 // @description  Adds all Amex Offers to your card with one click
 // @author       Andrew Porzio
 // @match        https://global.americanexpress.com/offers*
@@ -70,7 +70,7 @@
     btn.textContent = 'Add All Offers';
     btn.style.cssText = [
       'position:fixed',
-      'bottom:24px',
+      'top:24px',
       'right:24px',
       'z-index:99999',
       'background:#006fcf',
