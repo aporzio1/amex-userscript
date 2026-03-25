@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Amex Add All Offers
 // @namespace    http://tampermonkey.net/
-// @version      1.3.0
+// @version      1.3.1
 // @description  Adds all Amex Offers to your card with one click
 // @author       Andrew Porzio
 // @updateURL    https://raw.githubusercontent.com/aporzio1/amex-userscript/main/amex-add-all-offers.user.js
@@ -15,8 +15,8 @@
   'use strict';
 
   // ── Selectors (verified against live DOM 2026-03-25) ─────────────────────
-  // Each individual offer card.
-  const CARD_SELECTOR = '[data-testid="tileDiv"]';
+  // One per offer card — present across all card types (verified on two cards).
+  const CARD_SELECTOR = '[data-testid="merchantOfferTermsLink"]';
 
   // The offers list scrolls inside an inner div, not window.
   const USE_WINDOW_SCROLL = false;
