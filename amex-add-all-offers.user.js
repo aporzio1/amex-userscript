@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Amex Add All Offers
 // @namespace    http://tampermonkey.net/
-// @version      1.1.1
+// @version      1.2.0
 // @description  Adds all Amex Offers to your card with one click
 // @author       Andrew Porzio
 // @match        https://global.americanexpress.com/offers*
@@ -55,11 +55,15 @@
     scrollContainer.scrollTo(0, 0);
   }
 
-  function clickAllOffers() {
+  async function clickAllOffers(statusBtn) {
     const buttons = Array.from(document.querySelectorAll(ADD_BTN_SELECTOR)).filter(btn =>
       !btn.disabled
     );
-    buttons.forEach(btn => btn.click());
+    for (let i = 0; i < buttons.length; i++) {
+      statusBtn.textContent = `Adding ${i + 1} of ${buttons.length}...`;
+      buttons[i].click();
+      await sleep(1500); // wait for the add request to complete before clicking next
+    }
     return buttons.length;
   }
 
@@ -103,7 +107,7 @@
       return;
     }
 
-    const added = clickAllOffers();
+    const added = await clickAllOffers(btn);
 
     if (added === 0) {
       btn.textContent = 'All offers already added';
