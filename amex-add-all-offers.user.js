@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Amex Add All Offers
 // @namespace    http://tampermonkey.net/
-// @version      1.2.0
+// @version      1.3.0
 // @description  Adds all Amex Offers to your card with one click
 // @author       Andrew Porzio
 // @updateURL    https://raw.githubusercontent.com/aporzio1/amex-userscript/main/amex-add-all-offers.user.js
@@ -120,14 +120,14 @@
     btn.disabled = false;
   }
 
-  // Poll until the first offer card appears in the DOM, then inject the button.
-  // The CARD_SELECTOR acts as the sentinel — button won't appear until React has rendered.
-  const initInterval = setInterval(() => {
+  // Persistent poll: re-inject the button whenever cards are present but button is missing.
+  // This handles SPA navigation (e.g. switching cards) where React tears down the DOM
+  // without triggering a full page reload.
+  setInterval(() => {
     if (document.querySelector(CARD_SELECTOR)) {
-      clearInterval(initInterval);
       const btn = injectButton();
       if (btn) btn.addEventListener('click', () => handleClick(btn));
     }
-  }, 200);
+  }, 500);
 
 })();
