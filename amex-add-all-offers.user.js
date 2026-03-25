@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Amex Add All Offers
 // @namespace    http://tampermonkey.net/
-// @version      1.0.0
+// @version      1.1.0
 // @description  Adds all Amex Offers to your card with one click
 // @author       Andrew Porzio
 // @match        https://global.americanexpress.com/offers*
@@ -12,16 +12,16 @@
 (function () {
   'use strict';
 
-  // ── Selectors (verify and update these on the live page) ─────────────────
-  // Matches each individual offer card in the list.
-  // To verify: open DevTools → Elements, inspect one offer card,
-  // find the outermost repeating container element, update selector below.
-  const CARD_SELECTOR = '[data-testid*="offer-tile"]'; // UPDATE after live testing
+  // ── Selectors (verified against live DOM 2026-03-25) ─────────────────────
+  // Each individual offer card.
+  const CARD_SELECTOR = '[data-testid="tileDiv"]';
 
-  // Set to true if the page scrolls on window (check: scroll page, does window.scrollY change?)
-  // Set to false and fill SCROLL_CONTAINER_SELECTOR if offers scroll inside an inner div.
-  const USE_WINDOW_SCROLL = true; // UPDATE after live testing
-  const SCROLL_CONTAINER_SELECTOR = null; // set to CSS selector if USE_WINDOW_SCROLL is false
+  // The offers list scrolls inside an inner div, not window.
+  const USE_WINDOW_SCROLL = false;
+  const SCROLL_CONTAINER_SELECTOR = '[data-testid="scroll-container"]';
+
+  // The "Add to Card" button testid — more reliable than text matching.
+  const ADD_BTN_SELECTOR = '[data-testid="merchantOfferListAddButton"]';
   // ─────────────────────────────────────────────────────────────────────────
 
   function sleep(ms) {
@@ -56,8 +56,8 @@
   }
 
   function clickAllOffers() {
-    const buttons = Array.from(document.querySelectorAll('button')).filter(btn =>
-      btn.textContent.trim() === 'Add to Card' && !btn.disabled
+    const buttons = Array.from(document.querySelectorAll(ADD_BTN_SELECTOR)).filter(btn =>
+      !btn.disabled
     );
     buttons.forEach(btn => btn.click());
     return buttons.length;
