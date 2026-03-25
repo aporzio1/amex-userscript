@@ -36,8 +36,9 @@
   async function scrollToLoad(scrollContainer) {
     let prevCount = 0;
     let stableRounds = 0;
+    let maxIterations = 60; // 60 × 900ms ≈ 54s ceiling
 
-    while (stableRounds < 2) {
+    while (stableRounds < 2 && maxIterations-- > 0) {
       const currentCount = document.querySelectorAll(CARD_SELECTOR).length;
 
       if (currentCount === prevCount) {
@@ -55,17 +56,15 @@
   }
 
   function clickAllOffers() {
-    // Skip buttons that are disabled or already in a post-add state
-    const SKIP_TEXTS = new Set(['Added', 'Added to Card', 'Remove', 'Saved']);
-    const buttons = Array.from(document.querySelectorAll('button')).filter(btn => {
-      const text = btn.textContent.trim();
-      return text === 'Add to Card' && !btn.disabled && !SKIP_TEXTS.has(text);
-    });
+    const buttons = Array.from(document.querySelectorAll('button')).filter(btn =>
+      btn.textContent.trim() === 'Add to Card' && !btn.disabled
+    );
     buttons.forEach(btn => btn.click());
     return buttons.length;
   }
 
   function injectButton() {
+    if (document.getElementById('amex-add-all-btn')) return null; // already injected
     const btn = document.createElement('button');
     btn.id = 'amex-add-all-btn';
     btn.textContent = 'Add All Offers';
@@ -96,6 +95,7 @@
     const scrollContainer = getScrollContainer();
     await scrollToLoad(scrollContainer);
 
+    // Guard for wrong/outdated CARD_SELECTOR — "all already added" is handled below via added === 0
     const cardCount = document.querySelectorAll(CARD_SELECTOR).length;
     if (cardCount === 0) {
       btn.textContent = 'No offers found';
@@ -120,7 +120,7 @@
     if (document.querySelector(CARD_SELECTOR)) {
       clearInterval(initInterval);
       const btn = injectButton();
-      btn.addEventListener('click', () => handleClick(btn));
+      if (btn) btn.addEventListener('click', () => handleClick(btn));
     }
   }, 200);
 
