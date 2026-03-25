@@ -4,6 +4,8 @@
 // @version      1.2.0
 // @description  Adds all Amex Offers to your card with one click
 // @author       Andrew Porzio
+// @updateURL    https://raw.githubusercontent.com/aporzio1/amex-userscript/main/amex-add-all-offers.user.js
+// @downloadURL  https://raw.githubusercontent.com/aporzio1/amex-userscript/main/amex-add-all-offers.user.js
 // @match        https://global.americanexpress.com/offers*
 // @grant        none
 // @run-at       document-idle
